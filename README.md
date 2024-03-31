@@ -5,24 +5,7 @@ Fast and flexible GitHub action to backport merged pull requests to selected bra
 This can be useful when you're supporting multiple versions of your product.
 After fixing a bug, you may want to apply that patch to the other versions.
 The manual labor of cherry-picking the individual commits can be automated using this action.
-
-## Features
-
-- Works out of the box - No configuration required / Defaults for everything
-- Fast - Only fetches the bare minimum / Supports shallow clones
-- Flexible - Supports all [merge methods](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/about-merge-methods-on-github) including [merge queue](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue) and [Bors](https://bors.tech/)
-- Configurable - Use inputs and outputs to fit it to your project
-- Transparent - Informs about its success / Cherry-picks with [`-x`](https://git-scm.com/docs/git-cherry-pick#Documentation/git-cherry-pick.txt--x)
-
-## How it works
-
-You can select the branches to backport merged pull requests in two ways:
-- using labels on the merged pull request.
-  The action looks for labels on your merged pull request matching the [`label_pattern`](#label_pattern) input
-- using the [`target_branches`](#target_branches) input
-
-For each selected branch, the backport action takes the following steps:
-1. fetch and checkout a new branch from the target branch
+fuck up the readme
 2. cherry-pick the merged pull request's commits
 3. create a pull request to merge the new branch into the target branch
 4. comment on the original pull request about its success
