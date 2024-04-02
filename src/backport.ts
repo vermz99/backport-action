@@ -38,11 +38,11 @@ export type Config = {
 
 type Experimental = {
   detect_merge_method: boolean;
-  backport_on_conflicts: boolean;
+  conflict_resolution: string;
 };
 const experimentalDefaults: Experimental = {
   detect_merge_method: false,
-  backport_on_conflicts: false,
+  conflict_resolution: `fail`,
 };
 export { experimentalDefaults };
 
@@ -272,7 +272,7 @@ export class Backport {
           try {
             uncommitedShas = await this.git.cherryPick(
               commitShasToCherryPick,
-              this.config.experimental.backport_on_conflicts,
+              this.config.experimental.conflict_resolution,
               this.config.pwd,
             );
           } catch (error) {
@@ -423,7 +423,8 @@ export class Backport {
               target,
               branchname,
               uncommitedShas,
-              true,)
+              true,
+            );
 
             await this.github.createComment({
               owner,

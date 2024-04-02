@@ -50,7 +50,7 @@ const git_1 = __nccwpck_require__(3374);
 const utils = __importStar(__nccwpck_require__(918));
 const experimentalDefaults = {
     detect_merge_method: false,
-    backport_on_conflicts: false,
+    conflict_resolution: `fail`,
 };
 exports.experimentalDefaults = experimentalDefaults;
 var Output;
@@ -207,7 +207,7 @@ class Backport {
                         }
                         let uncommitedShas;
                         try {
-                            uncommitedShas = yield this.git.cherryPick(commitShasToCherryPick, this.config.experimental.backport_on_conflicts, this.config.pwd);
+                            uncommitedShas = yield this.git.cherryPick(commitShasToCherryPick, this.config.experimental.conflict_resolution, this.config.pwd);
                         }
                         catch (error) {
                             const message = this.composeMessageForCherryPickFailure(target, branchname, commitShasToCherryPick);
@@ -579,13 +579,13 @@ class Git {
             }
         });
     }
-    cherryPick(commitShas, allowPartialCherryPick, pwd) {
+    cherryPick(commitShas, conflictResolution, pwd) {
         return __awaiter(this, void 0, void 0, function* () {
             const abortCherryPickAndThrow = (commitShas, exitCode) => __awaiter(this, void 0, void 0, function* () {
                 yield this.git("cherry-pick", ["--abort"], pwd);
                 throw new Error(`'git cherry-pick -x ${commitShas}' failed with exit code ${exitCode}`);
             });
-            if (!allowPartialCherryPick) {
+            if (conflictResolution === `fail`) {
                 const { exitCode } = yield this.git("cherry-pick", ["-x", ...commitShas], pwd);
                 if (exitCode !== 0) {
                     yield abortCherryPickAndThrow(commitShas, exitCode);

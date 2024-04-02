@@ -35,12 +35,54 @@ describe("git.fetch", () => {
 });
 
 describe("git.cherryPick", () => {
-  describe("throws Error", () => {
-    it("when failing with an unexpected non-zero exit code", async () => {
-      response.exitCode = 1;
-      await expect(git.cherryPick(["unknown"], false, "")).rejects.toThrowError(
-        `'git cherry-pick -x unknown' failed with exit code 1`,
-      );
+  describe("without partial cherry-pick", () => {
+    describe("throws Error", () => {
+      it("when failing with an unexpected non-zero exit code", async () => {
+        response.exitCode = 1;
+        await expect(
+          git.cherryPick(["unknown"], `fail`, ""),
+        ).rejects.toThrowError(
+          `'git cherry-pick -x unknown' failed with exit code 1`,
+        );
+      });
+    });
+
+    describe("returns null", () => {
+      it("when success", async () => {
+        response.exitCode = 0;
+        await expect(git.cherryPick(["unknown"], `draft_commit_conflicts`, "")).resolves.toBe(null);
+      });
+    });
+  });
+
+  describe("with partial cherry-pick", () => {
+    describe("throw Error", () => {
+      it("when failing with an unexpected non-zero and non-one exit code", async () => {
+        response.exitCode = 128;
+        await expect(
+          git.cherryPick(["unknown"], `draft_commit_conflicts`, ""),
+        ).rejects.toThrowError(
+          `'git cherry-pick -x unknown' failed with exit code 128`,
+        );
+      });
+
+      describe("returns uncomitted shas", () => {
+        it("when failing with exit code 1", async () => {
+          response.exitCode = 1;
+          await expect(git.cherryPick(["unknown"], `draft_commit_conflicts`, "")).resolves.toEqual([
+            "unknown",
+          ]);
+        });
+      });
+
+      describe("returns null", () => {
+        it("when success", async () => {
+          response.exitCode = 0;
+          await expect(git.cherryPick(["unknown"], `draft_commit_conflicts`, "")).resolves.toBe(
+            null,
+          );
+        });
+      });
     });
   });
 });
