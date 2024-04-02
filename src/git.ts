@@ -9,7 +9,7 @@ export class GitRefNotFoundError extends Error {
 }
 
 export class Git {
-  constructor(private execa: Execa) { }
+  constructor(private execa: Execa) {}
 
   private async git(command: string, args: string[], pwd: string) {
     console.log(`git ${command} ${args.join(" ")}`);
@@ -149,9 +149,19 @@ export class Git {
         if (exitCode !== 0) {
           if (exitCode === 1) {
             // conflict encountered
-            // abort conflict cherry-pick
-            await this.git("cherry-pick", ["--abort"], pwd);
-
+            if (conflictResolution === `draft_commit_conflicts`) {
+              // Commit the conflict, resolution of this commit is left to the user.
+              // Allow creating PR for cherry-pick with only 1 commit and it results in a conflict.
+              await this.git(
+                "commit",
+                ["--all", `-m "BACKPORT-CONFLICT"`],
+                pwd,
+              );
+            } else {
+              throw new Error(
+                `'Unsupported conflict_resolution method ${conflictResolution}`,
+              );
+            }
             return uncommitedShas;
           } else {
             // other fail reasons

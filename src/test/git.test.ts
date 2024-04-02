@@ -50,7 +50,9 @@ describe("git.cherryPick", () => {
     describe("returns null", () => {
       it("when success", async () => {
         response.exitCode = 0;
-        await expect(git.cherryPick(["unknown"], `draft_commit_conflicts`, "")).resolves.toBe(null);
+        await expect(
+          git.cherryPick(["unknown"], `draft_commit_conflicts`, ""),
+        ).resolves.toBe(null);
       });
     });
   });
@@ -69,18 +71,18 @@ describe("git.cherryPick", () => {
       describe("returns uncomitted shas", () => {
         it("when failing with exit code 1", async () => {
           response.exitCode = 1;
-          await expect(git.cherryPick(["unknown"], `draft_commit_conflicts`, "")).resolves.toEqual([
-            "unknown",
-          ]);
+          await expect(
+            git.cherryPick(["unknown"], `draft_commit_conflicts`, ""),
+          ).resolves.toEqual(["unknown"]);
         });
       });
 
       describe("returns null", () => {
         it("when success", async () => {
           response.exitCode = 0;
-          await expect(git.cherryPick(["unknown"], `draft_commit_conflicts`, "")).resolves.toBe(
-            null,
-          );
+          await expect(
+            git.cherryPick(["unknown"], `draft_commit_conflicts`, ""),
+          ).resolves.toBe(null);
         });
       });
     });
