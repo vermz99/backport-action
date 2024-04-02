@@ -31,6 +31,6 @@ jobs:
           experimental: >
             {
               "detect_merge_method": false,
-              "conflict_resolution": draft_commit_conflicts
+              "conflict_resolution": "draft_commit_conflicts"
             }
           
