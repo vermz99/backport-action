@@ -31,6 +31,6 @@ jobs:
           experimental: >
             {
               "detect_merge_method": false,
-              "backport_on_conflicts": true
+              "conflict_resolution": draft_commit_conflicts
             }
           
