@@ -9,7 +9,7 @@ export class GitRefNotFoundError extends Error {
 }
 
 export class Git {
-  constructor(private execa: Execa) {}
+  constructor(private execa: Execa) { }
 
   private async git(command: string, args: string[], pwd: string) {
     console.log(`git ${command} ${args.join(" ")}`);
@@ -114,7 +114,7 @@ export class Git {
 
   public async cherryPick(
     commitShas: string[],
-    allowPartialCherryPick: boolean,
+    conflictResolution: string,
     pwd: string,
   ): Promise<string[] | null> {
     const abortCherryPickAndThrow = async (
@@ -127,7 +127,7 @@ export class Git {
       );
     };
 
-    if (!allowPartialCherryPick) {
+    if (conflictResolution === `fail`) {
       const { exitCode } = await this.git(
         "cherry-pick",
         ["-x", ...commitShas],
