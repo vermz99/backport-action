@@ -614,12 +614,15 @@ class Git {
                             if (conflictResolution === `draft_commit_conflicts`) {
                                 // Commit the conflict, resolution of this commit is left to the user.
                                 // Allow creating PR for cherry-pick with only 1 commit and it results in a conflict.
-                                yield this.git("commit", ["--all", `-m "BACKPORT-CONFLICT"`], pwd);
+                                const { exitCode } = yield this.git("commit", ["--all", `-m "BACKPORT-CONFLICT"`], pwd);
+                                if (exitCode !== 0) {
+                                    yield abortCherryPickAndThrow(commitShas, exitCode);
+                                }
+                                return uncommitedShas;
                             }
                             else {
                                 throw new Error(`'Unsupported conflict_resolution method ${conflictResolution}`);
                             }
-                            return uncommitedShas;
                         }
                         else {
                             // other fail reasons
